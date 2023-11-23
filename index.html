@@ -31,11 +31,260 @@
                         </div>
                 </header>
              </article>
-                            <article class="post">
+                 <article class="post">
                 
                             </div>
             <aside class="sidebar">
                             </aside>
+        <textarea>
+            Заголовок: Style.css
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+	
+/**
+ * Theme Name:  Название темы
+ * Theme URI:   URL темы в каталоге WordPress или где-то еще. Пример: http://wordpress.org/themes/twentythirteen
+ * Author:      Имя автора темы
+ * Author URI:  URL автора. Пример: http://mysite.org/
+ * Description: Короткое описание темы. 
+ * License:     Лицензия. Пример: GNU General Public License v2 or later
+ * License URI: URL на лицензию. Пример: http://www.gnu.org/licenses/gpl-2.0.html
+ * Tags:        Метки темы, по которым тему можно будет найти в каталоге WordPress. Например: black, brown, orange, tan, white, yellow
+ * Text Domain: Домен перевода для темы. Нужен чтобы можно было перевести описание указанное в Description. Например: twentythirteen
+ * Version:     Версия темы. Пример: 1.0
+ */
+Стандартный шаблон в wp
+1
+2
+3
+4
+	
+/*
+Template Name: Мой шаблон страницы
+Template Post Type: post, page, product
+*/
+Создать дочернюю тему
+
+/*
+Theme Name: Название дочерней темы
+Template: Имя Основной темs
+
+Не обязательные параметры:
+Theme URI: https://hd-24.ru/
+Description: Дочерняя тема для темы Theme Name
+Author: Alone
+Author URI: https://net-24.ru
+Version: 1.5
+*/
+
+/* импортируем стили родительской темы */
+@import url("../themename/style.css");
+
+/* Свои дополнительные стили */
+.item{ color:green; }
+
+Ссылка на категорию
+1
+	
+<?php the_category(', ') ?>
+
+Ссылка на количество комментариев
+1
+	
+<a href="<?php the_permalink() ?>#comments'' class='fi-comment' "><?php comments_number('нет комментариев', '1 комментарий', '% комментариев'); ?></a>
+
+Вывод постов из категории
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+	
+<?php
+  $posts = get_posts( array(
+    'category'    => 9,
+    'numberposts' => 1,
+    'order' => 'DESC',
+    'post_type'   => 'post',
+    'suppress_filters' => true,
+            ) ); 
+ 
+    foreach( $posts as $post ){setup_postdata($post);
+                                 
+?>
+// Content
+<?php } wp_reset_postdata(); // сброс  ?>
+Вывод имени автора статьи
+1
+	
+<?php the_author(); ?>
+Вывод аватара автора статьи
+1
+	
+<?php echo get_avatar( get_the_author_meta('user_email'), 70 ); ?>
+Выводит на экран первую активную панель виджетов
+1
+	
+<?php dynamic_sidebar( 'right-sidebar' ); ?>
+Подгружает файл шаблона комментариев на странице записи.
+1
+	
+<?php comments_template(); ?> 
+Как вставить шорткод в шаблон wordpress
+1
+	
+<?php echo do_shortcode( '[ваш_шорткод]' ); ?>
+bloginfo
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+	
+<html <?php language_attributes(); ?>>
+// язык сайта
+ 
+<?php bloginfo('charset'); ?>
+// кодировка сайта
+ 
+<?php bloginfo('description'); ?>
+// описание сайта
+ 
+<?php bloginfo('name'); ?>
+// название сайта
+ 
+<?php bloginfo('admin_email');?>
+// email admin
+ 
+<?php bloginfo('template_directory');?>
+// url текущей директории
+ 
+<?php bloginfo('get_template_directory()');?>
+// аналогично тому что выше
+ 
+<?php bloginfo('');?>
+Регистрация меню
+
+function si_setup(){
+    register_nav_menu('menu-header','Меню в шапке');
+    register_nav_menu('menu-footer','Mеню в подвале');
+}
+
+Вывод меню в верстке
+
+wp_nav_menu([
+                'theme_location' => 'menu-header',
+                'container' => 'nav',
+                'container_class' => 'main-navigation',
+                'menu_class' => 'main-navigation__list',
+                'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+            ]);
+
+Отключение админ бара
+1
+2
+	
+add_filter('show_admin_bar', '__return_false'); // отключить
+add_filter('show_admin_bar', '__return_true'); // включить
+Выведем текущую дату и время сайта в нужном формате
+1
+	
+echo current_time('d m Y H:i'); //> 17 07 2016 15:51 (с учетом временной зоны сайта)
+Вывести форму поиска
+1
+	
+<?php get_search_form(); ?>
+Поменять логотип на странице регистрации wordpress
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+	
+/* Меняем картинку логотипа WP на странице входа */
+function my_login_logo(){
+   echo '<style type="text/css">#login h1 a { background: url(https://serioussam.su/wp-content/uploads/2021/02/logo-login.png) no-repeat 0 0 !important; }</style>';
+}
+add_action('login_head', 'my_login_logo');
+/* Ставим ссылку с логотипа на сайт, а не на wordpress.org */
+add_filter( 'login_headerurl', create_function('', 'return get_home_url();') );
+/* убираем title в логотипе "сайт работает на wordpress" */
+add_filter( 'login_headertitle', create_function('', 'return false;') );
+ 
+ 
+   
+Меняем адрес и автора в письме о регистрации
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+	
+add_filter('wp_mail_from_name','change_name');
+ 
+function change_name($name) {
+    return 'Serious Club';
+}
+ 
+function change_email($email) {
+    return 'admin@serioussam.su';
+}
+    
+add_filter('wp_mail_from','change_email');
+Лимит PHP памяти в WordPress
+1
+	
+define( 'WP_MEMORY_LIMIT', '256M' );
+        </textarea>
             
         </article></main></div>
         <footer role="contentinfo">
